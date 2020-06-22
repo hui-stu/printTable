@@ -1,0 +1,41 @@
+    -- 打印table
+    -- t: (table)  要打印的table
+    -- isRed: (bool) 不赋值，默认黑色字体显示 ，true:以红色字体显示
+    function printTable( t,isRed )  
+        local print_r_cache={}
+        local targetStr = ""
+        local function sub_print_r(t,indent)
+            if (print_r_cache[tostring(t)]) then
+                targetStr = targetStr..indent.."*"..tostring(t).."\n"
+            else
+                print_r_cache[tostring(t)]=true
+                if (type(t)=="table") then
+                    for pos,val in pairs(t) do
+                        if (type(val)=="table") then
+                            targetStr = targetStr..indent.."["..pos.."] => ".." {".."\n"
+                            sub_print_r(val,indent..string.rep(" ",string.len(pos)+8))
+                            targetStr = targetStr..indent..string.rep(" ",string.len(pos)+6).."}".."\n"
+                        elseif (type(val)=="string") then
+                            targetStr = targetStr..indent.."["..pos..'] => "'..val.."\n"
+                        else
+                            targetStr = targetStr..indent.."["..pos.."] => "..tostring(val).."\n"
+                        end
+                    end
+                else
+                    targetStr = targetStr..indent..tostring(t).."\n"
+                end
+            end
+        end
+        if (type(t)=="table") then
+            targetStr = targetStr.." {".."\n"
+            sub_print_r(t,"  ")
+            targetStr = targetStr.."}".."\n"
+        else
+            sub_print_r(t,"  ")
+        end
+        if isRed then
+            info("<color='red'>printTable:</color>\n"..targetStr)
+        else
+            info(targetStr)
+        end   
+    end
